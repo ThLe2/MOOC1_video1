@@ -156,119 +156,6 @@ body {
 .pbadge.res  { background: var(--green-lt); color: var(--green); }
 .pbadge.mod  { background: var(--amber-lt); color: var(--amber); }
 
-.chapters {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-.chapters-header {
-  background: var(--navy);
-  color: white;
-  padding: 12px 18px;
-  font-size: 13px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.chapter-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 11px 18px;
-  border-bottom: 1px solid var(--border);
-  font-size: 13.5px;
-  transition: background .15s;
-}
-.chapter-item:last-child { border-bottom: none; }
-.chapter-item:hover { background: var(--sky); }
-.chapter-time {
-  background: var(--sky);
-  color: var(--blue);
-  border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 11px;
-  font-weight: 700;
-  font-family: monospace;
-  min-width: 44px;
-  text-align: center;
-  flex-shrink: 0;
-}
-.chapter-label { color: var(--text); font-weight: 500; flex: 1; }
-.chapter-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--border);
-  flex-shrink: 0;
-}
-.chapter-item:hover .chapter-dot { background: var(--blue); }
-
-.alerte {
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin-bottom: 24px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  font-size: 14px;
-  line-height: 1.6;
-}
-.alerte.warn { background: var(--amber-lt); border-left: 4px solid var(--amber); }
-.alerte.good { background: var(--green-lt); border-left: 4px solid var(--green); }
-.alerte-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-.alerte-titre { display: block; font-weight: 700; margin-bottom: 4px; }
-
-.code-box {
-  background: #1e293b;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-.code-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 16px;
-  background: #0f172a;
-}
-.code-lang {
-  color: #7dd3fc;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-.copy-btn {
-  background: var(--blue);
-  color: white;
-  border: 0;
-  border-radius: 6px;
-  padding: 5px 14px;
-  font-size: 12px;
-  font-weight: 700;
-  font-family: 'Nunito', sans-serif;
-  cursor: pointer;
-  transition: background .15s;
-}
-.copy-btn:hover { background: #1d4ed8; }
-.code-box pre {
-  margin: 0;
-  padding: 16px;
-  overflow-x: auto;
-  font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 12.5px;
-  line-height: 1.65;
-  color: #e2e8f0;
-}
-.hl-cmt  { color: #94a3b8; }
-.hl-tag  { color: #f9a8d4; }
-.hl-attr { color: #fbbf24; }
-.hl-val  { color: #86efac; }
-.hl-url  { color: #fde047; font-weight: 700; }
-
 footer {
   background: var(--navy);
   color: rgba(255,255,255,.75);
@@ -300,7 +187,7 @@ footer {
   <div class="hero-meta">
     <span class="hero-chip">🎬 Vidéo de formation</span>
     <span class="hero-chip">⏱ 5 min 15 s</span>
-    <span class="hero-chip">📐 720p HD</span>
+    <span class="hero-chip">📐 720p HD · ST FR · 0,90×</span>
   </div>
 </header>
 
@@ -318,15 +205,13 @@ footer {
     </div>
 
     <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:#000;">
-<iframe
-  src="https://www.youtube.com/embed/SCTT4UaveR0"
-  style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
-  allowfullscreen
-  loading="lazy"
-  title="La mise en demeure — TMK Performances"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
-</iframe>
+      <!-- Le div sera remplacé par l'iframe par l'API YouTube -->
+      <div id="player" style="position:absolute;top:0;left:0;width:100%;height:100%;"></div>
     </div>
+
+  </div>
+
+</div>
 
 <footer>
   <div class="footer-brand">TMK Performances</div>
@@ -335,10 +220,53 @@ footer {
   <div>Contenu élaboré à des fins de formation professionnelle.</div>
   <div class="footer-mention">
     Document de travail pédagogique.
-    </div>
   </div>
-</div>
 </footer>
+
+<!-- ===========================================================
+     API YouTube iFrame — pour forcer la vitesse et les sous-titres
+     =========================================================== -->
+<script>
+  // 1) Chargement asynchrone de l'API YouTube
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // 2) Création du lecteur quand l'API est prête
+  var player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      videoId: 'SCTT4UaveR0',
+      playerVars: {
+        'cc_load_policy': 1,    // Active l'affichage des sous-titres
+        'cc_lang_pref':  'fr',  // Sous-titres préférés en français
+        'hl':            'fr',  // Interface en français
+        'rel':           0,     // Pas de vidéos suggérées d'autres chaînes
+        'modestbranding':1      // Branding YouTube minimal
+      },
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      }
+    });
+  }
+
+  // 3) Quand le lecteur est prêt : on règle la vitesse à 0,90×
+  function onPlayerReady(event) {
+    event.target.setPlaybackRate(0.90);
+  }
+
+  // 4) Sécurité : si l'utilisateur change la vitesse, on la remet
+  //    (Optionnel — à retirer si vous voulez laisser le choix à l'apprenant)
+  function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.PLAYING) {
+      if (player.getPlaybackRate() !== 0.90) {
+        player.setPlaybackRate(0.90);
+      }
+    }
+  }
+</script>
 
 </body>
 </html>
